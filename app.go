@@ -4,6 +4,7 @@ import (
 	"github.com/getevo/docify/markdown"
 	"github.com/getevo/docify/openapi"
 	"github.com/getevo/evo/v2/lib/application"
+	"github.com/getevo/evo/v2/lib/args"
 	"os"
 	"time"
 )
@@ -28,14 +29,17 @@ func (a App) Router() error {
 }
 
 func (a App) WhenReady() error {
-	go func() {
-		time.Sleep(1 * time.Second)
-		SerializeEntities()
+	if args.Exists("--docify") {
 
-		markdown.Generate(&doc)
+		go func() {
+			time.Sleep(1 * time.Second)
+			SerializeEntities()
 
-		os.Exit(1)
-	}()
+			markdown.Generate(&doc)
+
+			os.Exit(1)
+		}()
+	}
 	return nil
 }
 
