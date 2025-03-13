@@ -32,6 +32,8 @@ type Entity struct {
 	Endpoints   []*restify.Endpoint `json:"endpoints"`
 	PrimaryKey  []Field             `json:"primary_key"`
 	Definition  *StructDefinition   `json:"definition"`
+	Resource    *restify.Resource   `json:"resource"`
+	DataSample  DataSample          `json:"data_sample"`
 }
 
 type Field struct {
@@ -41,6 +43,7 @@ type Field struct {
 	JsonType      string      `json:"json_type"`
 	DBType        string      `json:"db_type"`
 	GoType        string      `json:"go_type"`
+	DBName        string      `json:"db_name"`
 	Validation    string      `json:"validation"`
 	PrimaryKey    bool        `json:"primary_key"`
 	AutoIncrement bool        `json:"auto_increment"`
@@ -80,4 +83,12 @@ type FieldDefinition struct {
 	Type        string
 	Tag         string
 	Description string
+}
+
+type DataSample struct {
+	CreateJSON           string `json:"create_json"`
+	UpdateJSON           string `json:"update_json"`
+	BatchJSON            string `json:"batch_json"`
+	SingleResponseJSON   string `json:"single_response_json"`
+	MultipleResponseJSON string `json:"multiple_response_json"`
 }

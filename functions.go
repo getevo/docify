@@ -1,13 +1,17 @@
 package docify
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/getevo/docify/serializer"
-
+	"github.com/getevo/evo/v2/lib/db"
 	scm "github.com/getevo/evo/v2/lib/db/schema"
 	"github.com/getevo/evo/v2/lib/gpath"
 	"github.com/getevo/evo/v2/lib/log"
+	"github.com/getevo/evo/v2/lib/text"
 	"github.com/getevo/restify"
+	"github.com/go-faker/faker/v4"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm/schema"
 	"reflect"
 	"regexp"
@@ -30,7 +34,7 @@ func SerializeEntities() {
 		return resources[i].Table < resources[j].Table
 	})
 	var m = map[string]*serializer.Entity{}
-	for _, resource := range resources {
+	for i, resource := range resources {
 		def, err := GetStructDefinition(resource.Type)
 		var chunks = strings.Split(resource.Name, ".")
 		var entity = serializer.Entity{
@@ -39,6 +43,7 @@ func SerializeEntities() {
 			Description: def.Description,
 			Pkg:         chunks[0],
 			Path:        resource.Type.PkgPath(),
+			Resource:    resources[i],
 		}
 		var fields []serializer.Field
 
@@ -74,11 +79,12 @@ func SerializeEntities() {
 
 			var fieldDoc = serializer.Field{
 				Name:          field.Name,
-				GoType:        field.FieldType.Name(),
+				GoType:        field.FieldType.String(),
+				DBName:        field.DBName,
 				AutoIncrement: field.AutoIncrement,
 				PrimaryKey:    field.PrimaryKey,
 				Unique:        field.Unique,
-				Nullable:      field.NotNull,
+				Nullable:      field.NotNull || field.FieldType.Kind() == reflect.Ptr,
 			}
 
 			fieldDoc.JsonTag = strings.Split(field.Tag.Get("json"), ",")[0]
@@ -116,7 +122,9 @@ func SerializeEntities() {
 			fields = append(fields, fieldDoc)
 		}
 		entity.Fields = fields
+		entity.DataSample = ModelDataFaker(&entity)
 		doc.Entities = append(doc.Entities, entity)
+
 		m[entity.ID] = &entity
 	}
 
@@ -166,4 +174,77 @@ func ExtractEnumValues(input string) []string {
 	}
 
 	return values
+}
+
+func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
+	var sample = serializer.DataSample{}
+	sample.CreateJSON = "{"
+	sample.UpdateJSON = "{"
+	// try get a data from database
+	var object = reflect.Indirect(reflect.New(entity.Resource.Type))
+	ptr := object.Addr().Interface()
+	if db.First(ptr).RowsAffected == 0 {
+		_ = faker.FakeData(ptr)
+		for _, item := range entity.Fields {
+			if len(item.Enum) > 0 {
+				object.FieldByName(item.Name).SetString(item.Enum[0])
+			}
+			if item.GoType == "decimal.Decimal" {
+				object.FieldByName(item.Name).Set(reflect.ValueOf(decimal.NewFromFloat(3.14)))
+			}
+		}
+	}
+
+	var comment = ""
+	for _, item := range entity.Fields {
+		if item.AutoIncrement {
+			continue
+		}
+		if item.DBName == "created_at" || item.DBName == "updated_at" || item.DBName == "deleted_at" {
+			continue
+		}
+		var v, _ = json.Marshal(object.FieldByName(item.Name).Interface())
+		var description = []string{
+			item.GoType,
+		}
+		if len(item.Enum) > 0 {
+			description = append(description, "enum: "+strings.Join(item.Enum, ", "))
+		}
+		if item.Description != "" {
+			description = append(description, item.Description)
+		}
+		if item.Nullable {
+			description = append(description, "optional")
+		}
+		if item.Unique {
+			description = append(description, "unique")
+		}
+		if item.Validation != "" {
+			description = append(description, "validation: "+item.Validation)
+		}
+		if item.PrimaryKey {
+			description = append(description, "pk")
+		}
+		if item.AutoIncrement {
+			description = append(description, "autoIncr.")
+		}
+
+		var row = fmt.Sprintf(comment+"\n\t\"%s\":%s,", item.JsonTag, string(v))
+		comment = " //" + strings.Join(description, ",")
+		sample.CreateJSON += row
+		if !item.PrimaryKey {
+			sample.UpdateJSON += row
+		}
+	}
+
+	sample.CreateJSON = strings.Trim(sample.CreateJSON, ",") + comment + "\n}"
+	sample.UpdateJSON += strings.Trim(sample.UpdateJSON, ",") + comment + "\n}"
+	sample.BatchJSON = "[\n" + shift(sample.CreateJSON) + "\n]"
+	sample.SingleResponseJSON = text.ToJSON(object.Interface())
+	sample.MultipleResponseJSON = "[\n" + shift(sample.SingleResponseJSON) + "\n]"
+	return sample
+}
+
+func shift(s string) string {
+	return "\t" + strings.Join(strings.Split(s, "\n"), "\n\t")
 }

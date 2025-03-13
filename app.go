@@ -1,8 +1,10 @@
 package docify
 
 import (
+	"fmt"
 	"github.com/getevo/docify/markdown"
 	"github.com/getevo/docify/openapi"
+	"github.com/getevo/docify/postman"
 	"github.com/getevo/evo/v2/lib/application"
 	"github.com/getevo/evo/v2/lib/args"
 	"os"
@@ -14,8 +16,8 @@ var OpenAPI *openapi.OpenAPI
 type App struct {
 }
 
-func (a App) Priority() application.Priority {
-	return application.LOWEST
+func (app App) Priority() application.Priority {
+	return 10
 }
 
 func (a App) Register() error {
@@ -30,11 +32,11 @@ func (a App) Router() error {
 
 func (a App) WhenReady() error {
 	if args.Exists("--docify") {
-
 		go func() {
 			time.Sleep(1 * time.Second)
+			fmt.Println("Docifying ...")
 			SerializeEntities()
-
+			postman.Generate(&doc)
 			markdown.Generate(&doc)
 
 			os.Exit(1)

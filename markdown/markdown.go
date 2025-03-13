@@ -59,6 +59,11 @@ func Generate(project *serializer.Doc) {
 		links = append(links, md.Link(item.Pkg+"."+item.Name, item.Pkg+"."+item.Name+".md"))
 	}
 	doc.BulletList(links...)
+
+	doc.LF()
+	doc.H2("Postman Collections")
+	doc.PlainText(md.Link("Download Restify Collection", "./restify.json"))
+
 	err = doc.Build()
 	if err != nil {
 		panic(err)
@@ -133,7 +138,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 		tb.Rows = append(tb.Rows, row)
 	}
 
-	doc.PlainText(getTable(tb))
+	doc.PlainText(GetTable(tb))
 
 	doc.H2("APIs:")
 
@@ -152,6 +157,23 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 			}
 
 			doc.PlainText(p)
+			doc.LF()
+			doc.PlainText("<details>")
+			doc.PlainTextf("<summary><code>JSON Example</code></summary>\r\n")
+			var body = ""
+			if item.Batch {
+				body = entity.DataSample.BatchJSON
+			} else {
+				if item.Method == "PUT" {
+					body = entity.DataSample.CreateJSON
+				} else {
+					body = entity.DataSample.UpdateJSON
+				}
+
+			}
+			doc.CodeBlocks(md.SyntaxHighlightJSON, body)
+			doc.PlainText("</details>")
+
 		} else {
 			doc.PlainText("> None")
 		}
@@ -219,7 +241,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 			{"404", "application/json", "Not Found"},
 			{"500", "application/json", "Internal Server Error"},
 		}
-		doc.PlainText(getTable(tb))
+		doc.PlainText(GetTable(tb))
 
 		doc.PlainText("\n")
 
@@ -233,7 +255,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 	}
 }
 
-func getTable(tb md.TableSet) string {
+func GetTable(tb md.TableSet) string {
 	buf := &strings.Builder{}
 	table := tablewriter.NewWriter(buf)
 	table.SetNewLine("\r\n")
