@@ -177,7 +177,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 		} else {
 			doc.PlainText("> None")
 		}
-
+		doc.LF()
 		doc.H5("Query Parameters")
 		if item.Filterable {
 			doc.PlainTextf("\n> Filters: %s", md.Link("Filters Guide", "https://github.com/getevo/restify/blob/master/docs/endpoints.md#query-parameters-explanation"))

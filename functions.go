@@ -230,7 +230,7 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 		}
 
 		var row = fmt.Sprintf(comment+"\n\t\"%s\":%s,", item.JsonTag, string(v))
-		comment = " //" + strings.Join(description, ",")
+		comment = " // " + strings.Join(description, ",")
 		sample.CreateJSON += row
 		if !item.PrimaryKey {
 			sample.UpdateJSON += row
