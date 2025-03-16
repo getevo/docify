@@ -3,12 +3,12 @@ module github.com/getevo/docify
 go 1.23.5
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/getevo/evo/v2 v2.0.0-20250227114028-13f87ffd3fc3
-	github.com/getevo/postman v0.0.0-20240821202756-0e5fab66b666
 	github.com/getevo/restify v0.0.0-20250227131557-921d28a20b95
-	github.com/go-faker/faker/v4 v4.6.0
 	github.com/nao1215/markdown v0.7.1
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/shopspring/decimal v1.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/gorm v1.25.12
 )
@@ -20,6 +20,7 @@ require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
 	github.com/awoodbeck/strftime v0.0.0-20180221155908-016cde65fcde // indirect
 	github.com/getevo/json v0.0.0-20240816130540-f0ea83b195d9 // indirect
+	github.com/getevo/postman v0.0.0-20240821202756-0e5fab66b666 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gofiber/fiber/v2 v2.52.5 // indirect
 	github.com/gofiber/utils/v2 v2.0.0-beta.6 // indirect

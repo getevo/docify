@@ -32,6 +32,8 @@ github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de h1:FxWPpzIjnTlhP
 github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de/go.mod h1:DCaWoUhZrYW9p1lxo/cm8EmUOOzAPSEZNGF2DK1dJgw=
 github.com/awoodbeck/strftime v0.0.0-20180221155908-016cde65fcde h1:1v6ARGjZnMYJVZS9SheWajrEEHXJ0eEPD3Q2LjmId2Y=
 github.com/awoodbeck/strftime v0.0.0-20180221155908-016cde65fcde/go.mod h1:5nCO252N+QNZP3M986ViLdx44vRui5KuQkphwPHhYt8=
+github.com/brianvoe/gofakeit/v7 v7.2.1 h1:AGojgaaCdgq4Adzrd2uWdbGNDyX6MWNhHdQBraNfOHI=
+github.com/brianvoe/gofakeit/v7 v7.2.1/go.mod h1:QXuPeBw164PJCzCUZVmgpgHJ3Llj49jSLVkKPMtxtxA=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -45,8 +47,6 @@ github.com/getevo/postman v0.0.0-20240821202756-0e5fab66b666 h1:rfblSlry6uZjqA2o
 github.com/getevo/postman v0.0.0-20240821202756-0e5fab66b666/go.mod h1:iCrddor7Xze9iq7Ty2IG+6lr1F4unzozdJEoSBfEUh8=
 github.com/getevo/restify v0.0.0-20250227131557-921d28a20b95 h1:pkZtrh5LwAH+dtYOS8BS/0hW5Yvv4UwFZwx+tcdK/Ic=
 github.com/getevo/restify v0.0.0-20250227131557-921d28a20b95/go.mod h1:KIXq3VZI4BF4JSayoIhlXKKOhMcYncXWevWEsVFfdgE=
-github.com/go-faker/faker/v4 v4.6.0 h1:6aOPzNptRiDwD14HuAnEtlTa+D1IfFuEHO8+vEFwjTs=
-github.com/go-faker/faker/v4 v4.6.0/go.mod h1:ZmrHuVtTTm2Em9e0Du6CJ9CADaLEzGXW62z1YqFH0m0=
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
@@ -132,6 +132,8 @@ github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUc
 github.com/rogpeppe/go-internal v1.10.0 h1:TMyTOH3F/DB16zRVcYyreMH6GnZZrwQVAoYjRBZyWFQ=
 github.com/rogpeppe/go-internal v1.10.0/go.mod h1:UQnix2H7Ngw/k4C5ijL5+65zddjncjaFoBhdsK/akog=
 github.com/scylladb/termtables v0.0.0-20191203121021-c4c0b6d42ff4/go.mod h1:C1a7PQSMz9NShzorzCiG2fk9+xuCgLkPeCvMHYR2OWg=
+github.com/shopspring/decimal v1.4.0 h1:bxl37RwXBklmTi0C79JfXCEBD1cqqHt0bbgBAGFp81k=
+github.com/shopspring/decimal v1.4.0/go.mod h1:gawqmDU56v4yIKSwfBSFip1HdCCXN8/+DMd9qYNcwME=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
