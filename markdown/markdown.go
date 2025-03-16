@@ -159,7 +159,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 
 			doc.PlainText(p)
 			doc.LF()
-			doc.PlainText("<details>")
+
 			doc.PlainTextf("<summary><code>JSON Example</code></summary>\r\n")
 			var body = ""
 			if item.Batch {
@@ -172,8 +172,7 @@ func GenerateEntityDoc(path string, entity serializer.Entity) {
 				}
 
 			}
-			doc.CodeBlocks(md.SyntaxHighlightJSON, body)
-			doc.PlainText("</details>")
+			doc.CodeBlocks(md.SyntaxHighlightJavaScript, body)
 
 		} else {
 			doc.PlainText("> None")
