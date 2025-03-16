@@ -71,6 +71,7 @@ func Generate(project *serializer.Doc) {
 }
 
 func GenerateEntityDoc(path string, entity serializer.Entity) {
+	fmt.Println("Postman Entity: " + entity.Name)
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)

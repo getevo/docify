@@ -17,7 +17,7 @@ func Generate(project *serializer.Doc) {
 	var collection = NewCollection(project.Title+" Restify", project.Description)
 
 	for _, entity := range project.Entities {
-
+		fmt.Println("Postman Entity: " + entity.Name)
 		folder := collection.CreateFolder(entity.Pkg+"."+entity.Name, entity.Name+" API List")
 
 		for _, action := range entity.Endpoints {

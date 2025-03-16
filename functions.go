@@ -10,9 +10,9 @@ import (
 	"github.com/getevo/evo/v2/lib/log"
 	"github.com/getevo/evo/v2/lib/text"
 	"github.com/getevo/restify"
-	"github.com/go-faker/faker/v4"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm/schema"
+	"math/rand"
 	"reflect"
 	"regexp"
 	"sort"
@@ -46,7 +46,7 @@ func SerializeEntities() {
 			Resource:    resources[i],
 		}
 		var fields []serializer.Field
-
+		fmt.Println("Parsing fields for entity:", entity.Name)
 		entity.Definition = def
 		if err != nil {
 			log.Error(err)
@@ -60,7 +60,6 @@ func SerializeEntities() {
 				switch f.Kind() {
 				case reflect.Struct:
 
-					fmt.Println(f)
 					entity.Association = append(entity.Association, serializer.Association{
 						Name:       field.Name,
 						EntityName: f.String(),
@@ -126,6 +125,7 @@ func SerializeEntities() {
 		doc.Entities = append(doc.Entities, entity)
 
 		m[entity.ID] = &entity
+		fmt.Println("fields parsed for entity:", entity.Name)
 	}
 
 	for idx, _ := range doc.Entities {
@@ -177,6 +177,7 @@ func ExtractEnumValues(input string) []string {
 }
 
 func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
+	fmt.Println("Faking data for entity:", entity.Name)
 	var sample = serializer.DataSample{}
 	sample.CreateJSON = "{"
 	sample.UpdateJSON = "{"
@@ -184,14 +185,42 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 	var object = reflect.Indirect(reflect.New(entity.Resource.Type))
 	ptr := object.Addr().Interface()
 	if db.First(ptr).RowsAffected == 0 {
-		_ = faker.FakeData(ptr)
+		fmt.Println("Database doesn't contain any data for entity:", entity.Name)
+		fmt.Println("Faking data using faker...")
+
+		//_ = gofakeit.Struct(ptr)
+		fmt.Println("Faked data.")
 		for _, item := range entity.Fields {
+			var field = object.FieldByName(item.Name)
 			if len(item.Enum) > 0 {
-				object.FieldByName(item.Name).SetString(item.Enum[0])
+				field.SetString(item.Enum[0])
+				continue
 			}
 			if item.GoType == "decimal.Decimal" {
-				object.FieldByName(item.Name).Set(reflect.ValueOf(decimal.NewFromFloat(3.14)))
+				field.Set(reflect.ValueOf(decimal.NewFromFloat(3.14)))
+				continue
 			}
+			var baseField = field
+			for field.Kind() == reflect.Ptr {
+				field = field.Elem()
+			}
+
+			switch field.Kind() {
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+				reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				setFieldValue(baseField, rand.Intn(1000))
+			case reflect.Float64:
+				setFieldValue(baseField, rand.Float64())
+			case reflect.Float32:
+				setFieldValue(baseField, rand.Float32())
+			case reflect.String:
+				setFieldValue(baseField, text.Random(5))
+			case reflect.Bool:
+				setFieldValue(baseField, rand.Intn(2) == 0)
+			default:
+
+			}
+
 		}
 	}
 
@@ -247,4 +276,20 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 
 func shift(s string) string {
 	return "\t" + strings.Join(strings.Split(s, "\n"), "\n\t")
+}
+
+// Helper function to set value, handling pointers recursively
+func setFieldValue(field reflect.Value, v interface{}) {
+	var value = reflect.ValueOf(v)
+	for field.Kind() == reflect.Ptr {
+		if field.IsNil() {
+			field.Set(reflect.New(field.Type().Elem()))
+		}
+		field = field.Elem()
+	}
+	if field.CanSet() {
+		if value.Type().ConvertibleTo(field.Type()) {
+			field.Set(value.Convert(field.Type()))
+		}
+	}
 }
