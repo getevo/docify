@@ -189,7 +189,7 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 		fmt.Println("Faking data using faker...")
 
 		//_ = gofakeit.Struct(ptr)
-		fmt.Println("Faked data.")
+
 		for _, item := range entity.Fields {
 			var field = object.FieldByName(item.Name)
 			if len(item.Enum) > 0 {
@@ -220,7 +220,7 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 			default:
 
 			}
-
+			fmt.Println("Faked data.")
 		}
 	}
 
