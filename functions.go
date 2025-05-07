@@ -36,6 +36,10 @@ func SerializeEntities() {
 	var m = map[string]*serializer.Entity{}
 	for i, resource := range resources {
 		def, err := GetStructDefinition(resource.Type)
+		if err != nil{
+			log.Error(err)
+			def = &serializer.StructDefinition{}
+		}
 		var chunks = strings.Split(resource.Name, ".")
 		var entity = serializer.Entity{
 			ID:          resource.Name,
