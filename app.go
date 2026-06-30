@@ -1,7 +1,7 @@
 package docify
 
 import (
-	"fmt"
+	"github.com/getevo/evo/v2/lib/log"
 	"github.com/getevo/docify/markdown"
 	"github.com/getevo/docify/openapi"
 	"github.com/getevo/docify/postman"
@@ -34,7 +34,7 @@ func (a App) WhenReady() error {
 	if args.Exists("--docify") {
 		go func() {
 			time.Sleep(1 * time.Second)
-			fmt.Println("Docifying ...")
+			log.Info("Docifying ...")
 			SerializeEntities()
 			postman.Generate(&doc)
 			markdown.Generate(&doc)

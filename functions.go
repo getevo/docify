@@ -50,7 +50,7 @@ func SerializeEntities() {
 			Resource:    resources[i],
 		}
 		var fields []serializer.Field
-		fmt.Println("Parsing fields for entity:", entity.Name)
+		log.Info("Parsing fields for entity:", entity.Name)
 		entity.Definition = def
 		if err != nil {
 			log.Error(err)
@@ -129,7 +129,7 @@ func SerializeEntities() {
 		doc.Entities = append(doc.Entities, entity)
 
 		m[entity.ID] = &entity
-		fmt.Println("fields parsed for entity:", entity.Name)
+		log.Info("fields parsed for entity:", entity.Name)
 	}
 
 	for idx, _ := range doc.Entities {
@@ -181,7 +181,7 @@ func ExtractEnumValues(input string) []string {
 }
 
 func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
-	fmt.Println("Faking data for entity:", entity.Name)
+	log.Info("Faking data for entity:", entity.Name)
 	var sample = serializer.DataSample{}
 	sample.CreateJSON = "{"
 	sample.UpdateJSON = "{"
@@ -189,8 +189,8 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 	var object = reflect.Indirect(reflect.New(entity.Resource.Type))
 	ptr := object.Addr().Interface()
 	if db.First(ptr).RowsAffected == 0 {
-		fmt.Println("Database doesn't contain any data for entity:", entity.Name)
-		fmt.Println("Faking data using faker...")
+		log.Info("Database doesn't contain any data for entity:", entity.Name)
+		log.Info("Faking data using faker...")
 
 		//_ = gofakeit.Struct(ptr)
 
@@ -224,7 +224,7 @@ func ModelDataFaker(entity *serializer.Entity) serializer.DataSample {
 			default:
 
 			}
-			fmt.Println("Faked data.")
+			log.Info("Faked data.")
 		}
 	}
 
